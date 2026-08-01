@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ambulance Checkup</title>
+    <link rel="stylesheet" href="style.css?v=5">
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <h1>🚑 Ambulance Checkup</h1>
+            <p class="station-name">LRC Aley Station 602</p>
+            <div class="dropdowns">
+                <label>EMT:
+                    <select id="emt">
+                        <option value="">Select EMT</option>
+                    </select>
+                </label>
+                <label>Car:
+                    <select id="car">
+                        <option value="">Select Car</option>
+                    </select>
+                </label>
+                <label>Shift:
+                    <select id="shift">
+                        <option value="">Select Shift</option>
+                    </select>
+                </label>
+            </div>
+        </header>
+
+        <!-- Medical Kit Page -->
+        <div id="medical" class="page active" data-page="Medical">
+            <h2>🩹 Medical Kit</h2>
+            <div class="items"></div>
+            <div class="nav-buttons">
+                <button class="btn" onclick="nextPage()">Next: Trauma Kit →</button>
+            </div>
+        </div>
+
+        <!-- Trauma Kit Page -->
+        <div id="trauma" class="page" data-page="Trauma">
+            <h2>🩸 Trauma Kit</h2>
+            <div class="items"></div>
+            <div class="nav-buttons">
+                <button class="btn btn-secondary" onclick="prevPage()">← Back</button>
+                <button class="btn" onclick="nextPage()">Next: Ambulance Equipment →</button>
+            </div>
+        </div>
+
+        <!-- Ambulance Equipment Page -->
+        <div id="ambulance-equipment" class="page" data-page="Ambulance Equipment">
+            <h2>🚑 Ambulance Equipment</h2>
+            <div class="items"></div>
+            <div class="nav-buttons">
+                <button class="btn btn-secondary" onclick="prevPage()">← Back</button>
+                <button class="btn btn-primary" onclick="submitInitial()">Submit Checkup ✅</button>
+            </div>
+        </div>
+
+        <!-- Restock Page -->
+        <div id="restock" class="page">
+            <h2>📋 Restock Missing Items</h2>
+            <div id="restock-list" class="items"></div>
+            <div class="nav-buttons">
+                <button class="btn btn-primary" onclick="submitFinal()">All Done - Submit Final ✅</button>
+                <button class="btn btn-secondary" onclick="backToCheckup()">Edit Checkup</button>
+            </div>
+        </div>
+
+        <!-- Success Page -->
+        <div id="success" class="page">
+            <h2>🎉 Checkup Complete!</h2>
+            <p>All items submitted successfully.</p>
+            <div class="nav-buttons">
+                <button class="btn btn-primary" onclick="newCheckup()">New Checkup</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="loading-overlay" class="loading-overlay">
+        <div class="spinner"></div>
+        <div id="loading-text">Loading...</div>
+    </div>
+
+    <script src="script.js?v=4"></script>
+</body>
+
+</html>
