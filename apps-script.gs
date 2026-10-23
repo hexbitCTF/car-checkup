@@ -16,6 +16,11 @@ function doPost(e) {
     return ContentService.createTextOutput('ERROR: No POST data received');
   }
 
+  // --- ITEM GUIDES: save how-to-check text for a single item ---
+  if (e.parameter && e.parameter.action === 'saveGuide') {
+    return saveGuideEntry(e);
+  }
+
   try {
     const ss = getSpreadsheet();
     if (!ss) return ContentService.createTextOutput('ERROR: No spreadsheet found - check SPREADSHEET_ID or bind the script');
@@ -117,8 +122,6 @@ function doPost(e) {
       'Shygmomanometer Cuffs': '4 (Large Adult - Adult - Child - Infant)',
       'Stethoscope': '1',
       'Pulse Oximeter': '1',
-      'Penlight': '1',
-      'Oral Thermometer': '3',
       'Thermometer Strips': '10',
       'Glucometer': '1',
       'Glucometer Strips': '10',
@@ -129,7 +132,7 @@ function doPost(e) {
       'Head Immobilizer Fixations': '2',
       'Head Immobilizer Straps': '2',
       'Spider Belts': '1',
-      'Hook Straps': '4',
+      'Speed Clips': '4',
       'Pelvic Belt': '1',
       'KTD': '1',
       'Ducting Tape': '50% at least',
@@ -158,11 +161,10 @@ function doPost(e) {
       'KED': '1',
       'KED Straps': '2',
       'KED Pillow': '1',
-      'Cervical Collar Adult': '3',
+      'Cervical Collar Adult': '2',
       'Cervical Collar Pediatric': '2',
       'Oxygen E-Size Bottle': '2000 psi',
-      'Oxygen Jumbo Bottle': '2000 psi',
-      'Oxygen Flowmeter for Jumbo Bottle': '1',
+
       'Oxygen Spare Bottle Large': '1',
       'Oxygen Spare Bottle Small': '1',
       'Electrical Suction': '1',
@@ -182,8 +184,7 @@ function doPost(e) {
       'Protective Glasses or Goggles': '4',
       'N95 Face Mask': '4',
       'Trash Bags Large': '5',
-      'Cleanisept Spray': '1',
-      'Descosept Spray': '1',
+      'Descosept or Cleanisept Spray Bottle': '1',
       'Paper Towels': '1',
       'Hand Sanitizer (Front)': '50% at least',
       'Disposable Blanket': '3',
@@ -226,8 +227,6 @@ function doPost(e) {
       {page: 'Medical', item: 'Shygmomanometer Cuffs'},
       {page: 'Medical', item: 'Stethoscope'},
       {page: 'Medical', item: 'Pulse Oximeter'},
-      {page: 'Medical', item: 'Penlight'},
-      {page: 'Medical', item: 'Oral Thermometer'},
       {page: 'Medical', item: 'Thermometer Strips'},
       {page: 'Medical', item: 'Glucometer'},
       {page: 'Medical', item: 'Glucometer Strips'},
@@ -238,7 +237,7 @@ function doPost(e) {
       {page: 'Trauma', item: 'Head Immobilizer Fixations'},
       {page: 'Trauma', item: 'Head Immobilizer Straps'},
       {page: 'Trauma', item: 'Spider Belts'},
-      {page: 'Trauma', item: 'Hook Straps'},
+      {page: 'Trauma', item: 'Speed Clips'},
       {page: 'Trauma', item: 'Pelvic Belt'},
       {page: 'Trauma', item: 'KTD'},
       {page: 'Trauma', item: 'Ducting Tape'},
@@ -271,8 +270,7 @@ function doPost(e) {
       {page: 'Ambulance Equipment', item: 'Cervical Collar Pediatric'},
       {page: 'Ambulance Equipment', item: 'Oxygen E-Size Bottle'},
       {page: 'Ambulance Equipment', item: 'Oxygen Regulator for Bottle'},
-      {page: 'Ambulance Equipment', item: 'Oxygen Jumbo Bottle'},
-      {page: 'Ambulance Equipment', item: 'Oxygen Flowmeter for Jumbo Bottle'},
+
       {page: 'Ambulance Equipment', item: 'Oxygen Keychain'},
       {page: 'Ambulance Equipment', item: 'Oxygen Spare Bottle Large'},
       {page: 'Ambulance Equipment', item: 'Oxygen Spare Bottle Small'},
@@ -296,8 +294,7 @@ function doPost(e) {
       {page: 'Ambulance Equipment', item: 'N95 Face Mask'},
       {page: 'Ambulance Equipment', item: 'Trash Bags Large'},
       {page: 'Ambulance Equipment', item: 'Trash Bags Small'},
-      {page: 'Ambulance Equipment', item: 'Cleanisept Spray'},
-      {page: 'Ambulance Equipment', item: 'Descosept Spray'},
+      {page: 'Ambulance Equipment', item: 'Descosept or Cleanisept Spray Bottle'},
       {page: 'Ambulance Equipment', item: 'Paper Towels'},
       {page: 'Ambulance Equipment', item: 'Hand Sanitizer (Front)'},
       {page: 'Ambulance Equipment', item: 'Disposable Blanket'},
@@ -437,6 +434,82 @@ function doPost(e) {
   }
 }
 
+// --- ITEM GUIDES ---
+// Stores the "how to properly check this item" text in the spreadsheet so it is
+// shared by every user. Lives in a hidden-ish sheet named GUIDES.
+function getGuidesSheet(ss, createIfMissing) {
+  let sheet = ss.getSheetByName('GUIDES');
+  if (!sheet && createIfMissing) {
+    sheet = ss.insertSheet('GUIDES');
+    sheet.appendRow(['Key', 'Page', 'Item', 'Guide', 'Updated']);
+    sheet.setFrozenRows(1);
+    sheet.setColumnWidth(1, 300);
+    sheet.setColumnWidth(2, 160);
+    sheet.setColumnWidth(3, 245);
+    sheet.setColumnWidth(4, 600);
+    sheet.setColumnWidth(5, 160);
+    sheet.getRange(1, 1, 1, 5)
+      .setBackground('#1565c0')
+      .setFontColor('white')
+      .setFontWeight('bold');
+  }
+  return sheet;
+}
+
+function saveGuideEntry(e) {
+  try {
+    const ss = getSpreadsheet();
+    const payload = JSON.parse(e.parameter.guide || '{}');
+    if (!payload.key) return ContentService.createTextOutput('ERROR: missing key');
+
+    const sheet = getGuidesSheet(ss, true);
+    const values = sheet.getDataRange().getValues();
+
+    let targetRow = -1;
+    for (let i = 0; i < values.length; i++) {
+      if (values[i][0] === 'Key') continue;
+      if (values[i][0] === payload.key) { targetRow = i + 1; break; }
+    }
+
+    const row = [payload.key, payload.page || '', payload.item || '', payload.text || '', new Date()];
+
+    if (targetRow > 0) {
+      sheet.getRange(targetRow, 1, 1, 5).setValues([row]);
+    } else {
+      sheet.appendRow(row);
+    }
+
+    console.log('📖 Guide saved for ' + payload.key);
+    return ContentService.createTextOutput('OK');
+  } catch (err) {
+    console.error('❌ Guide save failed:', err.toString());
+    return ContentService.createTextOutput('ERROR: ' + err.toString());
+  }
+}
+
+function getGuidesJson() {
+  const empty = ContentService.createTextOutput(JSON.stringify({}))
+    .setMimeType(ContentService.MimeType.JSON);
+  try {
+    const ss = getSpreadsheet();
+    const sheet = getGuidesSheet(ss, false);
+    if (!sheet) return empty;
+
+    const out = {};
+    const values = sheet.getDataRange().getValues();
+    values.forEach((row, i) => {
+      if (row[0] === 'Key' || !row[0]) return;
+      out[row[0]] = row[3] || '';
+    });
+
+    return ContentService.createTextOutput(JSON.stringify(out))
+      .setMimeType(ContentService.MimeType.JSON);
+  } catch (err) {
+    console.error('❌ Guide load failed:', err.toString());
+    return empty;
+  }
+}
+
 function writeHeaders(sheet) {
   const headers = [
     'Start_Time', 'End_Time', 'Checkup_Time', 'EMT', 'Car', 'Shift',
@@ -500,7 +573,12 @@ function deleteFromCacheSheet(ss, key) {
 
 // TEST: open your /exec URL in a browser - it should show the deployment + spreadsheet info
 // Also re-applies column widths/centering to the WHOLE sheet, so older tables get fixed too.
-function doGet() {
+function doGet(e) {
+  // --- ITEM GUIDES: fetch every saved how-to-check text ---
+  if (e && e.parameter && e.parameter.action === 'getGuides') {
+    return getGuidesJson();
+  }
+
   try {
     const ss = getSpreadsheet();
     autoSizeColumns(ss.getSheets()[0]);

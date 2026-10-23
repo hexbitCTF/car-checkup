@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ambulance Checkup</title>
-    <link rel="stylesheet" href="style.css?v=5">
+    <link rel="stylesheet" href="style.css?v=10">
 </head>
 
 <body>
@@ -86,7 +86,26 @@
         <div id="loading-text">Loading...</div>
     </div>
 
-    <script src="script.js?v=4"></script>
+    <!-- Item Info Modal: how to properly check this item -->
+    <div id="guide-overlay" class="guide-overlay">
+        <div class="guide-modal">
+            <div class="guide-modal-header">
+                <h3 id="guide-title">Item</h3>
+                <button type="button" class="guide-close" onclick="closeGuideModal()"
+                    aria-label="Close">&times;</button>
+            </div>
+            <p class="guide-hint">Describe how this item should be properly checked. Saved here so every user
+                sees the same instructions.</p>
+            <textarea id="guide-text" rows="7"
+                placeholder="e.g. Read the gauge while the valve is open. PSI must stay above 2000. Check the seal for leaks."></textarea>
+            <div class="guide-modal-actions">
+                <button type="button" class="btn btn-secondary" onclick="closeGuideModal()">Cancel</button>
+                <button type="button" class="btn btn-primary" onclick="saveGuideFromModal()">Save</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js?v=9"></script>
 </body>
 
 </html>

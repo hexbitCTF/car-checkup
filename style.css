@@ -127,6 +127,21 @@ header h1 {
   font-size: 1.1em;
 }
 
+/* Wraps the item name + its info button so the button sits right after the
+   name, while the "Required" label stays pinned to the far right. */
+.item-name {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+
+.item-name label {
+  flex: 0 1 auto;
+  word-break: break-word;
+}
+
 /* FIXED: Responsive Required Labels */
 .required {
   font-size: 0.85em;
@@ -477,4 +492,169 @@ header h1 {
   cursor: not-allowed;
   transform: none !important;
   box-shadow: none !important;
+}
+
+/* ℹ️ INFO BUTTON ON EACH ITEM */
+.info-btn {
+  flex-shrink: 0;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  border: 2px solid #1565c0;
+  background: #ffffff;
+  color: #1565c0;
+  font-size: 1.1em;
+  font-weight: 800;
+  font-style: italic;
+  font-family: Georgia, 'Times New Roman', serif;
+  line-height: 1;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.info-btn:hover {
+  background: #1565c0;
+  color: #ffffff;
+  transform: scale(1.1);
+}
+
+/* Item already has saved instructions */
+.info-btn.has-guide {
+  background: #1565c0;
+  color: #ffffff;
+  box-shadow: 0 0 0 3px rgba(21, 101, 192, 0.2);
+}
+
+/* 📋 ITEM INFO MODAL - CENTERED ON SCREEN */
+.guide-overlay {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(3px);
+  z-index: 10000;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.guide-overlay.active {
+  display: flex;
+}
+
+.guide-modal {
+  background: #ffffff;
+  border-radius: 18px;
+  padding: 25px;
+  width: 100%;
+  max-width: 520px;
+  max-height: 85vh;
+  overflow-y: auto;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.35);
+  animation: guidePop 0.18s ease-out;
+}
+
+@keyframes guidePop {
+  from {
+    transform: scale(0.92);
+    opacity: 0;
+  }
+
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.guide-modal-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 15px;
+  margin-bottom: 10px;
+}
+
+.guide-modal-header h3 {
+  color: #333;
+  font-size: 1.25em;
+  line-height: 1.3;
+  word-break: break-word;
+}
+
+.guide-close {
+  flex-shrink: 0;
+  width: 36px;
+  height: 36px;
+  border: none;
+  border-radius: 50%;
+  background: #eceff1;
+  color: #546e7a;
+  font-size: 1.6em;
+  line-height: 1;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.guide-close:hover {
+  background: #e53935;
+  color: #ffffff;
+}
+
+.guide-hint {
+  color: #78909c;
+  font-size: 0.85em;
+  margin-bottom: 12px;
+  line-height: 1.4;
+}
+
+.guide-modal textarea {
+  width: 100%;
+  padding: 14px;
+  border: 2px solid #e1e5e9;
+  border-radius: 12px;
+  font-size: 1em;
+  font-family: inherit;
+  line-height: 1.5;
+  color: #2d3748;
+  resize: vertical;
+  background: #f8fafc;
+}
+
+.guide-modal textarea:focus {
+  outline: none;
+  border-color: #1565c0;
+  background: #ffffff;
+  box-shadow: 0 0 0 4px rgba(21, 101, 192, 0.12);
+}
+
+.guide-modal-actions {
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+  margin-top: 18px;
+  flex-wrap: wrap;
+}
+
+.guide-modal-actions .btn {
+  min-width: 120px;
+}
+
+@media (max-width: 768px) {
+  .guide-modal {
+    padding: 20px;
+  }
+
+  .guide-modal-actions {
+    flex-direction: column-reverse;
+  }
+
+  .guide-modal-actions .btn {
+    width: 100%;
+  }
 }
