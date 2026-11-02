@@ -1,7 +1,7 @@
 // CONFIGURATION 
 const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbz2CjVUbGscUtE7D1Mp4iDoC8FQqYFyck-s2bhMCe_t66cQkaPXUEPO9mIA_-DT1oHw/exec';
 const emts = ['John Doe', 'Jane Smith', 'Bob Johnson', 'Alice Brown'];
-const cars = ['Ambulance 101', 'Ambulance 102', 'Ambulance 103', 'Ambulance 104'];
+const cars = ['Ambulance 101', 'Ambulance 102', 'Ambulance 103', 'Ambulance 104', 'Ambulance 645'];
 const shifts = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
 
 const pages = {
@@ -450,12 +450,30 @@ function initDropdowns() {
         select.addEventListener('change', () => {
             state[id] = select.value;
             saveState();
+            if (id === 'car') {
+                renderPage(state.currentPage || 'Medical');
+            }
         });
     });
 }
 
 const transportItems = ['Foldable Stretcher', 'Stair Chair'];
 const transportKey = 'Ambulance Equipment-transport';
+
+// Items that are not present on the 645 ambulance.
+const ambulance645HiddenItems = new Set([
+    'EZ-Glide', 'Foldable Stretcher', 'Stair Chair',
+    'Male Urinal', 'Female Urinal', 'Scoop Stretcher',
+    'Spare Belts', 'Vacuum Mattress'
+]);
+
+function isAmbulance645() {
+    return (state.car || '').indexOf('645') !== -1;
+}
+
+function isCarHidden(item) {
+    return isAmbulance645() && ambulance645HiddenItems.has(item.name);
+}
 
 function isEquipmentHidden(item) {
     return transportItems.includes(item.name) && state.equipment && item.name !== state.equipment;
@@ -621,7 +639,7 @@ function ensureAllItemsInitialized() {
     const validKeys = new Set();
     pageOrder.forEach(pageName => {
         pages[pageName].forEach(item => {
-            if (item.type !== 'section' && !isEquipmentHidden(item)) {
+            if (item.type !== 'section' && !isEquipmentHidden(item) && !isCarHidden(item)) {
                 validKeys.add(`${pageName}-${encodeURIComponent(item.name)}`);
             }
         });
@@ -687,6 +705,7 @@ function renderPage(pageName) {
 
         pages[pageName].forEach(item => {
             if (pageName === 'Ambulance Equipment' && transportItems.includes(item.name)) {
+                if (isAmbulance645()) return; // 645 has no transport dropdown
                 if (!transportRowRendered) {
                     renderTransportRow(container);
                     transportRowRendered = true;
@@ -694,6 +713,7 @@ function renderPage(pageName) {
                 return;
             }
             if (isEquipmentHidden(item)) return;
+            if (isCarHidden(item)) return;
 
             if (item.type === 'section') {
                 const sectionDiv = document.createElement('div');
@@ -953,7 +973,7 @@ function submitInitial() {
     const validKeys = new Set();
     pageOrder.forEach(pageName => {
         pages[pageName].forEach(item => {
-            if (item.type !== 'section' && !isEquipmentHidden(item)) {
+            if (item.type !== 'section' && !isEquipmentHidden(item) && !isCarHidden(item)) {
                 validKeys.add(`${pageName}-${encodeURIComponent(item.name)}`);
             }
         });
@@ -1115,7 +1135,7 @@ function showRestock() {
     const validKeys = new Set();
     pageOrder.forEach(pageName => {
         pages[pageName].forEach(item => {
-            if (item.type !== 'section' && !isEquipmentHidden(item)) {
+            if (item.type !== 'section' && !isEquipmentHidden(item) && !isCarHidden(item)) {
                 validKeys.add(`${pageName}-${encodeURIComponent(item.name)}`);
             }
         });
@@ -1294,7 +1314,7 @@ function submitFinal() {
     const validKeys = new Set();
     pageOrder.forEach(pageName => {
         pages[pageName].forEach(item => {
-            if (item.type !== 'section' && !isEquipmentHidden(item)) {
+            if (item.type !== 'section' && !isEquipmentHidden(item) && !isCarHidden(item)) {
                 const key = `${pageName}-${encodeURIComponent(item.name)}`;
                 validKeys.add(key);
             }
