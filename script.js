@@ -1,7 +1,7 @@
 // CONFIGURATION 
 const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbz2CjVUbGscUtE7D1Mp4iDoC8FQqYFyck-s2bhMCe_t66cQkaPXUEPO9mIA_-DT1oHw/exec';
 const emts = ['John Doe', 'Jane Smith', 'Bob Johnson', 'Alice Brown'];
-const cars = ['Ambulance 101', 'Ambulance 102', 'Ambulance 103', 'Ambulance 104', 'Ambulance 645'];
+const cars = ['Ambulance 676', 'Ambulance 677', 'Ambulance 678', 'Ambulance 679', 'Ambulance 680', 'Ambulance 640', 'Ambulance 645'];
 const shifts = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
 
 const pages = {
