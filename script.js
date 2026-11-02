@@ -145,11 +145,11 @@ const pages = {
         { name: 'Surgical Face Mask (Front)', type: 'slider', required: '50', displayRequired: '50% at least', min: 0, max: 100, step: 5 },
         { name: 'Surgical Mask', quantity: true, required: '1', displayRequired: '1 box' },
         { name: 'KN95 Mask', quantity: true, required: '10', displayRequired: '10' },
-        { name: 'Goggles / Face Shields', quantity: true, required: '10', displayRequired: '10' },
-        { name: 'Gown', quantity: true, required: '10', displayRequired: '10' },
+        { name: 'Goggles / Face Shields', quantity: true, required: '12', displayRequired: '12' },
+        { name: 'Gown', quantity: true, required: '12', displayRequired: '12' },
         { name: 'High Nitrile Gloves', quantity: true, required: '24', displayRequired: '24' },
         { name: 'Advanced PPE Kit', quantity: true, required: '2', displayRequired: '2' },
-        { name: 'Extra N95 Masks', quantity: true, required: '5', displayRequired: '5' },
+        { name: 'Extra N95 Masks', quantity: true, required: '12', displayRequired: '12' },
 
         // SECTION: Disinfection
         { type: 'section', name: 'Disinfection' },
