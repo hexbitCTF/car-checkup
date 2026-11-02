@@ -144,10 +144,10 @@ const pages = {
         { name: 'Large or X-Large Gloves (Front)', type: 'slider', required: '50', displayRequired: '50% at least', min: 0, max: 100, step: 5 },
         { name: 'Surgical Face Mask (Front)', type: 'slider', required: '50', displayRequired: '50% at least', min: 0, max: 100, step: 5 },
         { name: 'Surgical Mask', quantity: true, required: '1', displayRequired: '1 box' },
-        { name: 'KN95 Mask', quantity: true, required: '10', displayRequired: '10' },
+        { name: 'KN95 Mask', quantity: true, required: '12', displayRequired: '12' },
         { name: 'Goggles / Face Shields', quantity: true, required: '12', displayRequired: '12' },
         { name: 'Gown', quantity: true, required: '12', displayRequired: '12' },
-        { name: 'High Nitrile Gloves', quantity: true, required: '24', displayRequired: '24' },
+        { name: 'High Nitrile Gloves', quantity: true, required: '24', displayRequired: '12 pairs' },
         { name: 'Advanced PPE Kit', quantity: true, required: '2', displayRequired: '2' },
         { name: 'Extra N95 Masks', quantity: true, required: '12', displayRequired: '12' },
 
